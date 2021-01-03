@@ -2,7 +2,7 @@
 
 (scroll-bar-mode -1)         ; Disable visible scrollbar
 (tool-bar-mode -1)           ; Disable the toolbar
-(set-fringe-mode 15)         ; put breath room on the border  
+(set-fringe-mode 7)          ; put breath room on the border  
 
 ;; Set up a visible bell
 (setq visible-bell t)
@@ -33,6 +33,14 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+(column-number-mode)
+(global-display-line-numbers-mode t)
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda() (display-line-numbers-mode 0))))
+
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
@@ -48,6 +56,16 @@
 	 ("C-d" . ivy-reverse-i-search-kill))
    :config
    (ivy-mode 1))
+
+;; Parethesis delimiter
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
 
 (use-package all-the-icons)
 
@@ -78,12 +96,58 @@
   )
 
 
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+(use-package general)
+
+;; (general-define-key
+;;  "M-x" 'amx
+;;  "C-s" 'counsel-grep-or-swiper)
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/git-repos")
+    (setq projectile-project-search-path '("~/git-repos")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (all-the-icons doom-modeline use-package ivy))))
+ '(package-selected-packages
+   (quote
+    (magit projectile general helpful counsel which-key use-package rainbow-delimiters ivy-rich elisp-refs doom-themes doom-modeline))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
