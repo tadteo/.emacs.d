@@ -63,7 +63,8 @@
 (use-package ivy-prescient
   :after counsel
   :config
-  (ivy-prescient-mode 1))
+  (ivy-prescient-mode 1)
+  (prescient-persist-mode 1))
 
 ;; Parethesis delimiter
 (use-package rainbow-delimiters
@@ -171,7 +172,9 @@
 
 (use-package company-prescient
   :after company
-  :config (company-prescient-mode 1))
+  :config
+  (company-prescient-mode 1)
+  (prescient-persist-mode 1))
 
 ;;To gestire projects folders
 (use-package projectile
@@ -255,7 +258,7 @@
 (use-package vterm)
 
 ;;eshell
-(defun efs/configure-eshell ()
+(defun configure-eshell ()
   ;; Save command history when commands are entered
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
 
@@ -270,19 +273,27 @@
 (use-package eshell-git-prompt)
 
 (use-package eshell
-  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :hook (eshell-first-time-mode . configure-eshell)
   :config
 
   (with-eval-after-load 'esh-opt
     (setq eshell-destroy-buffer-when-process-dies t)
     (setq eshell-visual-commands '("htop")))
 
-  (eshell-git-prompt-use-theme 'powerline))
+  ;;(eshell-git-prompt-use-theme 'powerline)
+  )
 
+;;DIRED SETTINGS
 (use-package dired
   :ensure nil
   :commands (dired dired-jump)
   :custom ((dired-listing-switches "-agho --group-directories-first")))
+
+;; To keep a single dired buffer and not multiples ones
+(use-package dired-single)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 ;;Python
 ;;(use-package elpy
@@ -306,7 +317,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile)))
+   '(all-the-icons-dired dired-single company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
