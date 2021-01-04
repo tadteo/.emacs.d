@@ -33,13 +33,14 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
-
 (column-number-mode)
+
 (global-display-line-numbers-mode t)
 (dolist (mode '(org-mode-hook
 		term-mode-hook
 		shell-mode-hook
-		eshell-mode-hook))
+		eshell-mode-hook
+		treemacs-mode-hook))
   (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 (use-package ivy
@@ -57,6 +58,12 @@
 	 ("C-d" . ivy-reverse-i-search-kill))
    :config
    (ivy-mode 1))
+
+;;use a kind of history to suggest the command run with M-x more recent run
+(use-package ivy-prescient
+  :after counsel
+  :config
+  (ivy-prescient-mode 1))
 
 ;; Parethesis delimiter
 (use-package rainbow-delimiters
@@ -106,6 +113,7 @@
 	 ("C-x b" . counsel-ibuffer)
 	 ("C-x C-f" . counsel-find-file)))
 
+;; Create a richer description of the help function inside emacs
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -122,6 +130,50 @@
 ;;  "M-x" 'amx
 ;;  "C-s" 'counsel-grep-or-swiper)
 
+;;Settings for coding 
+
+;; Language server
+
+(defun lsp-mode-setup()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . lsp-mode-setup)
+  :init (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t))
+
+;;for better ui can be annoying some time
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy)
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  ;; To use tab for completion
+  ;; :bind (:map company-active-map
+  ;; 	      ("<tab>" . company-complete-selection))
+  ;;       (:map lsp-mode-map
+  ;; 	      ("<tab>" . company-indent-or-complete-common))
+  :custom
+	(company-minimum-prefix-length 1)
+	(company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+(use-package company-prescient
+  :after company
+  :config (company-prescient-mode 1))
+
+;;To gestire projects folders
 (use-package projectile
   :diminish projectile-mode
   :config (projectile-mode)
@@ -140,7 +192,6 @@
 (use-package magit
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
 
 
 (defun org-mode-setup ()
@@ -200,7 +251,54 @@
 (use-package eterm-256color
   :hook (term-mode . eterm-256color-mode))
 
+;;better terminal emulation much faster
 (use-package vterm)
+
+;;eshell
+(defun efs/configure-eshell ()
+  ;; Save command history when commands are entered
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+  ;; Truncate buffer for performance
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+  (setq eshell-history-size         10000
+        eshell-buffer-maximum-lines 10000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell-git-prompt)
+
+(use-package eshell
+  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :config
+
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("htop")))
+
+  (eshell-git-prompt-use-theme 'powerline))
+
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :custom ((dired-listing-switches "-agho --group-directories-first")))
+
+;;Python
+;;(use-package elpy
+;;  :init (elpy-enable))
+
+(use-package python-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred))
+  ;; :custom
+  ;; ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ;; ;; (python-shell-interpreter "python3")
+  ;; ;; (dap-python-executable "python3")
+  ;; (dap-python-debugger 'debugpy)
+  ;; :config
+  ;; (require 'dap-python))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -208,10 +306,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (vterm eterm-256color visual-fill-column forge projectile general helpful counsel which-key use-package rainbow-delimiters ivy-rich elisp-refs doom-themes doom-modeline))))
+   '(company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ )
