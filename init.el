@@ -197,6 +197,11 @@
 ;;   :custom
 ;;   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+(use-package eterm-256color
+  :hook (term-mode . eterm-256color-mode))
+
+(use-package vterm)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -204,10 +209,9 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (visual-fill-column forge projectile general helpful counsel which-key use-package rainbow-delimiters ivy-rich elisp-refs doom-themes doom-modeline))))
+    (vterm eterm-256color visual-fill-column forge projectile general helpful counsel which-key use-package rainbow-delimiters ivy-rich elisp-refs doom-themes doom-modeline))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
