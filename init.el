@@ -97,12 +97,11 @@
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   ;; (doom-themes-neotree-config)
   ;; or for treemacs users
-  ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  ;; (doom-themes-treemacs-config)
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
   
   ;; Corrects (and improves) org-mode's native fontification.
-  ;;(doom-themes-org-config))
-  )
+  (doom-themes-org-config))
 
 
 (use-package ivy-rich
@@ -126,6 +125,8 @@
   ([remap describe-key] . helpful-key))
 
 (use-package general)
+
+(use-package treemacs)
 
 ;; (general-define-key
 ;;  "M-x" 'amx
@@ -290,6 +291,24 @@
   :custom ((dired-listing-switches "-agho --group-directories-first")))
 
 ;; To keep a single dired buffer and not multiples ones
+(defun my-dired-init ()
+  "Bunch of stuff to run for dired, either immediately or when it's
+   loaded."
+  ;; <add other stuff here>
+  (define-key dired-mode-map [remap dired-find-file]
+    'dired-single-buffer)
+  (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+    'dired-single-buffer-mouse)
+  (define-key dired-mode-map [remap dired-up-directory]
+    'dired-single-up-directory))
+
+;; if dired's already loaded, then the keymap will be bound
+(if (boundp 'dired-mode-map)
+    ;; we're good to go; just add our bindings
+    (my-dired-init)
+  ;; it's not loaded yet, so add our bindings to the load-hook
+  (add-hook 'dired-load-hook 'my-dired-init))
+
 (use-package dired-single)
 
 (use-package all-the-icons-dired
