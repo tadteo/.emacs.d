@@ -38,6 +38,7 @@
 (global-display-line-numbers-mode t)
 (dolist (mode '(org-mode-hook
 		term-mode-hook
+		vterm-mode-hook
 		shell-mode-hook
 		eshell-mode-hook
 		treemacs-mode-hook))
@@ -256,7 +257,11 @@
   :hook (term-mode . eterm-256color-mode))
 
 ;;better terminal emulation much faster
-(use-package vterm)
+
+(use-package vterm
+  :config
+  (setq vterm-kill-buffer-on-exit t)
+  (setq kill-buffer-query-functions nil))
 
 ;;eshell
 (defun configure-eshell ()
