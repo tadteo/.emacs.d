@@ -319,12 +319,13 @@
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
 
+(use-package dired-hacks-utils)
+
 ;;Python
 ;;(use-package elpy
 ;;  :init (elpy-enable))
 
 (use-package python-mode
-  :ensure t
   :hook (python-mode . lsp-deferred))
   ;; :custom
   ;; ;; NOTE: Set these if Python 3 is called "python3" on your system!
@@ -334,6 +335,17 @@
   ;; :config
   ;; (require 'dap-python))
 
+(use-package flycheck)
+(global-flycheck-mode)
+
+(use-package multiple-cursors
+  :bind(
+  ("C->" . mc/mark-next-like-this)
+  ("C-<" . mc/mark-previous-like-this)
+  ("C-c C-<" . mc/mark-all-like-this)))
+
+  
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -341,7 +353,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(all-the-icons-dired dired-single company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile)))
+   '(multiple-cursors multiple-cursor flycheck dired-hack-utils dired+ ranger dired-ranger dired-hacks all-the-icons-dired dired-single company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
