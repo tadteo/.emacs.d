@@ -239,7 +239,7 @@
   (org-font-setup))
 
 (defun org-mode-visual-fill ()
-  (setq visual-fill-column-width 75
+  (setq visual-fill-column-width 150
         visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
@@ -322,6 +322,7 @@
 (use-package dired-hacks-utils)
 
 ;;Python
+(setq python-shell-interpreter "python3")
 ;;(use-package elpy
 ;;  :init (elpy-enable))
 
@@ -353,7 +354,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(multiple-cursors multiple-cursor flycheck dired-hack-utils dired+ ranger dired-ranger dired-hacks all-the-icons-dired dired-single company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile)))
+   '(lsp-jedi multiple-cursors multiple-cursor flycheck dired-hack-utils dired+ ranger dired-ranger dired-hacks all-the-icons-dired dired-single company-prescient python-mode elpy lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode ivy-prescient which-key vterm visual-fill-column use-package rainbow-delimiters ivy-rich helpful general forge eterm-256color eshell-git-prompt doom-themes doom-modeline counsel-projectile))
+ '(python-shell-interpreter "python3" t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
